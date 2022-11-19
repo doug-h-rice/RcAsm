@@ -1,17 +1,8 @@
-/*
-* 
-* modified by dhr, 23/08/2012
-* On SCMP \D calculates one out so add \E to allow for this. 
-*
-*/
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "header.h"
 #include "mstrings.h"
-
 
 int Check_Entry(char *Entry,char *Buffer)
 {
@@ -98,24 +89,10 @@ int WildMatch(char *src,char *dest)
         }
       else if (bs=='\\') {
         bs=upcase(*src++);
-        if ( (bs=='D') || (bs=='E') ) {
+        if (bs=='D') {
             dest=get_num(dest,&wrd);
-	    // added by dhr
-            /* 
-               \D works out displacement, 
-               8060 scmp it is 1 out for immeadiate instructions 
-            */
-             if  (bs=='E') {
-               /* 8060 SC/MP needs a special */  
-	       wrd++;
-             }	
-            // end of added by dhr
             args[ArgCount]=wrd;
-	/*	
             argtype[ArgCount++]='D';
-	*/
-            argtype[ArgCount++]=bs;
-
             }
         else if (bs=='N' || bs=='B' || bs=='W' || bs=='(') {
           if (bs=='N') bitlength=4;
@@ -371,16 +348,6 @@ void Translate(int Entry)
         B=(args[i]-(address+1)) & 255;
         noout = ' ';
         }
-
-
-      /* Added by DHR for 8060 SC/MP \D needs +1 for LDR and STR */
-      if (argtype[i]=='E') {
-        B=(args[i]-(address+1)) & 255;
-        noout = ' ';
-        }
-
-
-
       if (argtype[i]=='L' || argtype[i] == 'M') {
         Lptr=listBuffer;
         flag='*';
