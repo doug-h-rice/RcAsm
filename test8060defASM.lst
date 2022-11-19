@@ -1,0 +1,423 @@
+    1 0000:             ;
+    2 0000:             ; testASM.asm tests Assembler 
+    3 0000:             ; this file tests the RCASM 8060.def file 
+    4 0000:             ; each instruction and typical syntax is tested
+    5 0000:             ;
+    6 0000:             ; build rcasm 
+    7 0000:             ; ..\tcc rcasm.c asmcmds.c mstrings.c support.c
+    8 0000:             ;
+    9 0000:             ; rcasm -l -h -r -d 8060 test8060defASM.asm
+   10 0000:             ; rcasm -l -h -r -d8060 test8060defASM.asm
+   11 0000:             ;
+   12 0000:             ; rcasm -l -h -r -d8060 test8060defASM.asm
+   13 0000:             ; 
+   14 0000:             ; 26/01/2020 Doug Rice
+   15 0000:             ;
+   16 0000:             ;
+   17 0000:             ;
+   18 0000:             ;
+   19 0000:             
+   20 0000:             
+   21 0000:             
+            8060{
+   23 0000:             
+   24 0000:             Disp:	.equ 0d00H
+   25 0000:             ChRom:	.equ 010bH
+   26 0000:             Duck:	.equ 061h
+   27 0000:             
+   28 0000:             ;	org	0f0fh
+   29 0000:             	org	0f50h
+   30 0F50: C4 0F       	ldi	0fh
+   31 0F52: 35          	xpah	P1
+   32 0F53: C4 60       	ldi	060h
+   33 0F55: 31          	xpal	P1
+   34 0F56: 91 00       	jmp +0(P1)
+   35 0F58:             
+   36 0F58:             	org 0F5Dh
+   37 0F5D: 3F          	xppc P3
+   38 0F5E: 3F          	xppc P3
+   39 0F5F: 3F          	xppc P3
+   40 0F60: 3F          	xppc P3	
+   41 0F61: 3F          	xppc P3
+   42 0F62: 3F          	xppc P3
+   43 0F63: 3F          	xppc P3
+   44 0F64: 3F          	xppc P3	
+   45 0F65: 3F          	xppc P3
+   46 0F66: 3F          	xppc P3
+   47 0F67: 3F          	xppc P3
+   48 0F68: 3F          	xppc P3	
+   49 0F69: 3F          	xppc P3
+   50 0F6A: 3F          	xppc P3
+   51 0F6B: 3F          	xppc P3
+   52 0F6C: 3F          	xppc P3	
+   53 0F6D:             
+   54 0F6D:             	; Test:- single byte instructions	
+   55 0F6D:             	org	0f70h	
+   56 0F70: 00          	halt
+   57 0F71: 01          	xae
+   58 0F72: 02          	ccl
+   59 0F73: 03          	scl
+   60 0F74: 04          	dint
+   61 0F75: 05          	ien
+   62 0F76: 06          	csa
+   63 0F77: 07          	cas
+   64 0F78: 08          	nop
+   65 0F79:             	
+   66 0F79: 19          	sio
+   67 0F7A:             	
+   68 0F7A: 1C          	sr
+   69 0F7B: 1D          	srl
+   70 0F7C: 1E          	rr
+   71 0F7D: 1F          	rrl
+   72 0F7E:             	
+   73 0F7E: 30          	xpal 0
+   74 0F7F: 31          	xpal 1
+   75 0F80: 32          	xpal 2
+   76 0F81: 33          	xpal 3
+   77 0F82:             
+   78 0F82: 34          	xpah 0
+   79 0F83: 35          	xpah 1
+   80 0F84: 36          	xpah 2
+   81 0F85: 37          	xpah 3
+   82 0F86:             	
+   83 0F86: 3C          	xppc 0
+   84 0F87: 3D          	xppc 1
+   85 0F88: 3E          	xppc 2
+   86 0F89: 3F          	xppc 3
+   87 0F8A:             
+   88 0F8A: 3C          	xppc P0
+   89 0F8B: 3D          	xppc P1
+   90 0F8C: 3E          	xppc P2
+   91 0F8D: 3F          	xppc P3
+   92 0F8E:             
+   93 0F8E:             	
+   94 0F8E: 40          	LDE
+   95 0F8F:             	
+   96 0F8F: 50          	ANE
+   97 0F90: 58          	ORE
+   98 0F91: 60          	XRE
+   99 0F92: 68          	DAE
+  100 0F93: 70          	ADE
+  101 0F94: 78          	CAE
+  102 0F95:             
+  103 0F95:             	; Test:- two byte instructions not using pointers	
+  104 0F95:             	
+  105 0F95: 8F 00       	DLY 0
+  106 0F97: 8F FF       	DLY 255
+  107 0F99:             
+  108 0F99:             	; Test:- Two byte instructions jmps
+  109 0F99:             	;  
+  110 0F99:             	; Test:- Two Byte PC Relative instructions	
+  111 0F99:             	;	PC in incremented at start of instruction, PC+1+disp => PC
+  112 0F99:             	;
+  113 0F99:             	; 8060.def uses
+  114 0F99:             	; JMP	\D
+  115 0F99:             	; 90 \1
+  116 0F99:             	;
+  117 0F99:             here:
+  118 0F99: 90 FE       	jmp	here 	; 90 FE
+  119 0F9B: 94 FC       	jp	here
+  120 0F9D: 98 FA       	jz	here
+  121 0F9F: 9C F8       	jnz here
+  122 0FA1:             
+  123 0FA1: 90 00       	jmp	next	; 90 00
+  124 0FA3:             next:
+  125 0FA3: 90 FE       	jmp	next	; 90 00
+  126 0FA5:             
+  127 0FA5: 91 99       	jmp	here(1)
+  128 0FA7: 95 99       	jp	here(1)
+  129 0FA9: 99 99       	jz	here(1)
+  130 0FAB: 9D 99       	jnz here(1)
+  131 0FAD:             
+  132 0FAD:             	; Test:- Two byte instructions jmps
+  133 0FAD:             	;  
+  134 0FAD:             	; Test:- Two Byte PC Relative instructions	
+  135 0FAD:             	;	PC in incremented at start of instruction, PC+1+disp => PC
+  136 0FAD:             	;	RCASM treats +0(0) as absolute
+  137 0FAD:             	;   8060.def uses
+  138 0FAD:             	;
+  139 0FAD:             	;	JMP	\D\{rg}
+  140 0FAD:             	;	90|2 |1 works
+  141 0FAD:             	;
+  142 0FAD:             	
+  143 0FAD: 90 00       	jmp	+0(0) ; PC incremented at start of instruction.
+  144 0FAF: 91 00       	jmp	+0(1)
+  145 0FB1: 92 00       	jmp	+0(2)
+  146 0FB3: 93 00       	jmp	+0(3) ; expect 93 00
+  147 0FB5:             
+  148 0FB5: 90 01       	jmp	+1(0) ; PC incremented at start of instruction.
+  149 0FB7: 91 01       	jmp	+1(1)
+  150 0FB9: 92 01       	jmp	+1(2)
+  151 0FBB: 93 01       	jmp	+1(3) ; expect 93 01
+  152 0FBD:             
+  153 0FBD: 90 FF       	jmp	-1(0) ; PC incremented at start of instruction.
+  154 0FBF: 91 FF       	jmp	-1(1)
+  155 0FC1: 92 FF       	jmp	-1(2)
+  156 0FC3: 93 FF       	jmp	-1(3) ; expect 93 FF
+  157 0FC5:             
+  158 0FC5: 94 00       	jp	+0(0) ; PC incremented at start of instruction.
+  159 0FC7: 95 00       	jp	+0(1)
+  160 0FC9: 96 00       	jp	+0(2)
+  161 0FCB: 97 00       	jp	+0(3) ; expect 93 00 
+  162 0FCD:             
+  163 0FCD: 94 01       	jp	+1(0) ; PC incremented at start of instruction.
+  164 0FCF: 95 01       	jp	+1(1)
+  165 0FD1: 96 01       	jp	+1(2)
+  166 0FD3: 97 01       	jp	+1(3) ; expect 93 01 
+  167 0FD5:             
+  168 0FD5: 94 FF       	jp	-1(0) ; PC incremented at start of instruction.
+  169 0FD7: 95 FF       	jp	-1(1)
+  170 0FD9: 96 FF       	jp	-1(2)
+  171 0FDB: 97 FF       	jp	-1(3) ; expect 93 FF 
+  172 0FDD:             
+  173 0FDD: 98 00       	jz	+0(0) ; PC incremented at start of instruction.
+  174 0FDF: 99 00       	jz	+0(1)
+  175 0FE1: 9A 00       	jz	+0(2)
+  176 0FE3: 9B 00       	jz	+0(3) ; expect 93 00 
+  177 0FE5:             
+  178 0FE5: 98 01       	jz	+1(0) ; PC incremented at start of instruction.
+  179 0FE7: 99 01       	jz	+1(1)
+  180 0FE9: 9A 01       	jz	+1(2)
+  181 0FEB: 9B 01       	jz	+1(3) ; expect 93 01 
+  182 0FED:             
+  183 0FED: 98 FF       	jz	-1(0) ; PC incremented at start of instruction.
+  184 0FEF: 99 FF       	jz	-1(1)
+  185 0FF1: 9A FF       	jz	-1(2)
+  186 0FF3: 9B FF       	jz	-1(3) ; expect 93 FF 
+  187 0FF5:             
+  188 0FF5: 9C 00       	jnz	+0(0) ; PC incremented at start of instruction.
+  189 0FF7: 9D 00       	jnz	+0(1)
+  190 0FF9: 9E 00       	jnz	+0(2)
+  191 0FFB: 9F 00       	jnz	+0(3) ; expect 93 00 
+  192 0FFD:             
+  193 0FFD: 9C 01       	jnz	+1(0) ; PC incremented at start of instruction.
+  194 0FFF: 9D 01       	jnz	+1(1)
+  195 1001: 9E 01       	jnz	+1(2)
+  196 1003: 9F 01       	jnz	+1(3) ; expect 93 01 
+  197 1005:             
+  198 1005: 9C FF       	jnz	-1(0) ; PC incremented at start of instruction.
+  199 1007: 9D FF       	jnz	-1(1)
+  200 1009: 9E FF       	jnz	-1(2)
+  201 100B: 9F FF       	jnz	-1(3) ; expect 93 FF 
+  202 100D:             
+  203 100D:             
+  204 100D:             
+  205 100D:             	; Test:- Two byte instructions jmps
+  206 100D:             	;  
+  207 100D:             	; Test:- Two Byte JMP PC Relative instructions	
+  208 100D:             	;	PC in incremented at start of instruction, PC+1+disp => PC
+  209 100D:             	;	RCASM treats +0(0) as absolute
+  210 100D:             	;   8060.def uses
+  211 100D:             	;
+  212 100D:             	;   JMP	\E\{rg}
+  213 100D:             	;   90|2 lo(1)
+  214 100D:             	;
+  215 100D:             	;	NOTE RCASM seems to generate   disp with 1 added.
+  216 100D:             	;	
+  217 100D: 95 99       	jp	here(1) ; here is a PC relative value
+  218 100F: 99 99       	jz	here(1)
+  219 1011: 9D 99       	jnz here(1)
+  220 1013:             
+  221 1013:             
+  222 1013:             
+  223 1013:             
+  224 1013: A8 21       	ildr data
+  225 1015: A8 1F       	ild data
+  226 1017:             	
+  227 1017: A8 01       	ild +1(0) ; pc is incremented before offset added.
+  228 1019: A9 01       	ild +1(1)
+  229 101B: AA FF       	ild -1(2)
+  230 101D: AB 01       	ild +1(3)
+  231 101F:             	
+  232 101F: AD 01       	ild @+1(1) ; @ not supported
+  233 1021: AE FF       	ild @-1(2) ; @ not supported 
+  234 1023: AF 01       	ild @+1(3) ; @ not supported
+  235 1025:             	
+  236 1025:             	
+  237 1025: B8 0F       	dldr data 
+  238 1027: B8 0D       	dld data 
+  239 1029: B9 01       	dld +1(1)
+  240 102B: BA FF       	dld -1(2)
+  241 102D: BB 01       	dld +1(3)
+  242 102F: BD 01       	dld @+1(1) ; @ not supported
+  243 1031: BE FF       	dld @-1(2) ; @ not supported
+  244 1033: BF 01       	dld @+1(3) ; @ not supported
+  245 1035:             
+  246 1035:             disp: .equ 0d00h
+  247 1035: AA          data: .db 0AAh 
+  248 1036:             dec: .equ 10
+  249 1036:             
+  250 1036: C4 0D       	LDI	0Dh
+  251 1038: C4 0D       	LDI	Disp.1 ; to get hi byte .1
+  252 103A: C4 00       	LDI	Disp.0 ; to get lo byte .0
+  253 103C:                 ; to get hi byte .2
+  254 103C:             	
+  255 103C:             	;LDI H(Disp)
+  256 103C:             	;LDI L(Disp)
+  257 103C: C0 F8       	LDR data
+  258 103E: C0 F6       	LD data
+  259 1040:             	
+  260 1040:             	;
+  261 1040:             	;
+  262 1040:             	; 
+  263 1040:             	;
+  264 1040: C0 01       	ld +1(0) ; PC in incremented before disp added.
+  265 1042: C1 01       	ld +1(1) 
+  266 1044: C2 01       	ld +1(2) 
+  267 1046: C3 01       	ld +1(3) 
+  268 1048: C3 0A       	ld +dec(3) 
+  269 104A:             
+  270 104A: C4 01       	ld @+1(0) 
+  271 104C: C5 01       	ld @+1(1) 
+  272 104E: C6 01       	ld @+1(2) 
+  273 1050: C7 01       	ld @+1(3) 
+  274 1052: C3 F6       	ld -dec(3) 
+  275 1054:             	
+  276 1054:             	; load using absolute address but relative to PC
+  277 1054: C8 E0       	str data
+  278 1056: C8 DE       	st data
+  279 1058:             	; Offset rel Pointer
+  280 1058: C8 01       	st +1(0) 
+  281 105A: C9 01       	st +1(1) 
+  282 105C: CA 01       	st +1(2) 
+  283 105E: CB 01       	st +1(3) 
+  284 1060: CB 0A       	st +dec(3) 
+  285 1062:             
+  286 1062: CC 01       	st @+1(0) ; 
+  287 1064: CD 01       	st @+1(1) 
+  288 1066: CE 01       	st @+1(2) 
+  289 1068: CF 01       	st @+1(3) 
+  290 106A: C3 F6       	ld -dec(3) 
+  291 106C:             	
+  292 106C:             
+  293 106C:             	
+  294 106C: C0 2C       	ldr	here
+  295 106E: C0 2A       	ld	here
+  296 1070: C1 00       	ld	+0(1)
+  297 1072: C5 00       	ld	@+0(1)
+  298 1074:             	
+  299 1074: C9 00       	st	+0(1)
+  300 1076: D0 22       	andr here
+  301 1078: D0 20       	and here
+  302 107A: D1 00       	and +0(1)
+  303 107C: D5 00       	and @+0(1)
+  304 107E: D4 00       	ani	0
+  305 1080:             	
+  306 1080: D8 18       	orr here
+  307 1082: D8 16       	or here
+  308 1084: D9 00       	or	+0(1)
+  309 1086: DD 00       	or	@+0(1)
+  310 1088: DC 00       	ori 0
+  311 108A:             	
+  312 108A: E0 0E       	xorr here
+  313 108C: E0 0C       	xor here
+  314 108E: E1 00       	xor	+0(1)
+  315 1090: E5 00       	xor	@+0(1)
+  316 1092: E4 00       	xri	0
+  317 1094:             	
+  318 1094: E8 04       	dadr here
+  319 1096: E8 02       	dad here
+  320 1098: E9 00       	dad +0(1)
+  321 109A: ED 00       	dad @+0(1)
+  322 109C: EC 00       	dai 0
+  323 109E:             	
+  324 109E: F0 FA       	addr here
+  325 10A0: F0 F8       	add here
+  326 10A2: F1 00       	add +0(1)
+  327 10A4: F5 00       	add @+0(1)
+  328 10A6: F4 00       	adi 0
+  329 10A8:             	
+  330 10A8: F8 F0       	cadr here	
+  331 10AA: F8 EE       	cad here	
+  332 10AC: F9 00       	cad +0(1)
+  333 10AE: FD 00       	cad @+0(1)
+  334 10B0: FC 00       	cai 0
+  335 10B2:             	
+  336 10B2:             	; simple example
+  337 10B2:             loop:	
+  338 10B2: C4 AA       	ldi	0AAh
+  339 10B4: E4 55       	xri 055h
+  340 10B6: C8 01       	st +1(0) ; relative to (0) is a problem
+  341 10B8: C9 01       	st +1(1) ; 
+  342 10BA: C8 04       	str op 
+  343 10BC: C8 02       	st  op 
+  344 10BE: 3F          	xppc P3
+  345 10BF: 00          op:	db 0
+  346 10C0: 90 F0       	jmp loop
+  347 10C2:             	
+  348 10C2: 90 7F       	jmp	-129(0)
+  349 10C4: 90 7E       	jmp	+126(0)
+  350 10C6:             	
+  351 10C6:             	
+  352 10C6:             	
+  353 10C6:             ;tmp:	db 0
+  354 10C6: 00          Row:	.db 0
+  355 10C7: 00          Count:	.db 0
+  356 10C8: 00          Sum:	.db 0
+  357 10C9:             ;tmp1:	db 0	
+  358 10C9:             
+  359 10C9:             Shoot:
+  360 10C9:             	; reload display pointer.
+  361 10C9: C4 0D       	LDI	Disp.1
+  362 10CB: 35          	XPAH	1
+  363 10CC: C4 00       	LDI	Disp.0
+  364 10CE: 31          	XPAL	1
+  365 10CF: C4 01       	LDI	1
+  366 10D1: C8 F4       	ST	Row
+  367 10D3:             React:
+  368 10D3: C4 01       	LDI 	01	; speed of flight
+  369 10D5: C8 F1       	ST	Count
+  370 10D7: C4 00       	LDI	0
+  371 10D9: C8 EE       	ST	Sum
+  372 10DB:             
+  373 10DB:             	;LDI 	0AAh	; speed of flight
+  374 10DB:             	;STR	Count
+  375 10DB:             	;LDI	055h
+  376 10DB:             	;STR	Sum
+  377 10DB:             
+  378 10DB:             
+  379 10DB:             
+  380 10DB:             	; xppc	3
+  381 10DB:             
+  382 10DB: C4 28       Shift:	LDI	40	;Move ducks this time
+  383 10DD: 01          Ndig:	XAE
+  384 10DE: C0 E7       	LD	Row
+  385 10E0: 1E          	RR
+  386 10E1: C8 E4       	ST	Row
+  387 10E3: 94 04       	JP	No
+  388 10E5:             
+  389 10E5: C4 61       	LDI	Duck
+  390 10E7: 90 02       	JMP	Go
+  391 10E9:             
+  392 10E9:             No:
+  393 10E9: C4 00       	LDI 	0	;No duck
+  394 10EB:             Go:
+  395 10EB: C9 80       	ST	-128(1)
+  396 10ED: 8F 01       	DLY	01
+  397 10EF:             
+  398 10EF: C0 D8       	LD	Sum
+  399 10F1:             
+  400 10F1: 9C 0E       	JNZ	Nok	;No Key
+  401 10F3:             
+  402 10F3: C1 80       	LD	-128(1)
+  403 10F5: E4 FF       	XRI	0FFh
+  404 10F7: 98 08       	JZ	Nok
+  405 10F9: C8 CE       	ST	Sum
+  406 10FB: C0 CA       	LD	Row
+  407 10FD: E4 80       	XRI	080h
+  408 10FF: C8 C6       	ST	Row	;Change top bit
+  409 1101:             
+  410 1101:             Nok:	
+  411 1101: 40          	LDE
+  412 1102: 03          	SCL
+  413 1103: FC 01       	CAI	1	; Subtract 1
+  414 1105: 94 D6       	JP	Ndig	;Do next digit
+  415 1107:             
+  416 1107: B8 BF       	DLD	Count
+  417 1109: 98 C8       	JZ	React	;Start new position
+  418 110B:             
+  419 110B: C4 07       	LDI	7
+  420 110D: 90 CE       	JMP	Ndig 	;Another sweep
+            }	
+  422 110F:             
+
